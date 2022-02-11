@@ -1,0 +1,6 @@
+species	path
+Homo sapiens	homo_sapiens.sto
+Mus	mus.sto
+Rattus norvegicus	rattus_norvegicus.sto
+Oryctolagus cuniculus	oryctolagus_cuniculus.sto
+Vicugna pacos	vicugna_pacos.sto
