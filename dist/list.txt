@@ -4,4 +4,5 @@ Mus	mus.sto
 Rattus norvegicus	rattus_norvegicus.sto
 Oryctolagus cuniculus	oryctolagus_cuniculus.sto
 Macaca mulatta	macaca_mulatta.sto
+Sus scrofa	sus_scrofa.sto
 Vicugna pacos	vicugna_pacos.sto
