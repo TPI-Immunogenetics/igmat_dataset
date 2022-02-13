@@ -98,15 +98,23 @@ def validateAlignment(path, verbose=False):
     if not os.path.exists(path):
       raise Exception('Unable to find alignment file')
 
+    chainList = []
     filename = os.path.basename(path)
     with open(path, 'r') as handle:
 
       count = 0
       for line in handle:
 
-        # Skip comment line
         count += 1
         line = line.strip()
+
+        # Parse ID line
+        if line.startswith('#=GF ID'):
+          chain = line.replace('#=GF ID', '').split('_')[1]
+          chainList.append(chain)
+          continue
+
+        # Skip comment lines
         if not line or line[0] == '#':
           continue
 
@@ -158,7 +166,8 @@ def validateAlignment(path, verbose=False):
   if warningCount:
     print('Found {0} warnings while validating data. Please check the alignment'.format(warningCount))
 
-  return True
+  return chainList
+  # return True
 
 def loadConfig(path):
 
@@ -349,28 +358,30 @@ if __name__ == "__main__":
       generateAlignment(data, species, output_stockholm)
   
     # Check the alignment
-    valid = validateAlignment(output_stockholm)
-
+    chainList = validateAlignment(output_stockholm)
+    
     # Update result list
     resultList.append({
       'species': species,
       'path': output_filename,
-      'valid': valid
+      'valid': True if chainList else False,
+      'chain': chainList
     })
 
   # Store results 
   list_path = os.path.join(dist_path, 'list.txt')
   with open(list_path, 'w') as handle:
 
-    handle.write('species\tpath\n')
+    handle.write('species\tpath\tchain\n')
     for i in range(len(resultList)):
       if not resultList[i]['valid']:
         print('Alignment {0} is not valid. Please check'.format(resultList[i]['species']))
         continue
 
-      handle.write('{0}\t{1}\n'.format(
+      handle.write('{0}\t{1}\t{2}\n'.format(
         resultList[i]['species'],
-        resultList[i]['path']
+        resultList[i]['path'],
+        ','.join(resultList[i]['chain'])
       ))
 
 
