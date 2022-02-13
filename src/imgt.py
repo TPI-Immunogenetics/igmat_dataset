@@ -132,7 +132,8 @@ def _format_j_genes(jalignments, species, chain):
       for i in range(len(jalignments)):
 
         # Trim down sequence to 15 characters
-        trimmed = jalignments[i]['sequence'][-15:]
+        trimmed = jalignments[i]['sequence']
+        # trimmed = jalignments[i]['sequence'][-15:]
         handle.write('>{species}|{chain}|{type}|{allele}\n{sequence}\n'.format(
           species=species,
           chain=chain,
@@ -149,7 +150,8 @@ def _format_j_genes(jalignments, species, chain):
         ))
 
     # Run muscle
-    process = Popen( [ musclePath, "-in", input_file, "-gapopen", "-10", "-out", output_file, ], stdout=PIPE, stderr=PIPE )
+    process = Popen( [ musclePath, "-in", input_file, "-out", output_file, ], stdout=PIPE, stderr=PIPE )
+    # process = Popen( [ musclePath, "-in", input_file, "-gapopen", "-10", "-out", output_file, ], stdout=PIPE, stderr=PIPE )
     _, pr_stderr = process.communicate()
 
     if not os.path.exists(output_file):
@@ -161,11 +163,6 @@ def _format_j_genes(jalignments, species, chain):
         ref_aligned = sequence.getSequence()
         break
 
-    # start = ref_aligned.index(reference['sequence'])
-    # start = 0
-    start = max(0, ref_aligned.find(reference['sequence']))
-    START = (start+1-reference['start']) if start > reference['start'] else 0
-    END = start + len(reference['sequence'])
     for sequence in fasta.parse(output_file):
 
       if not hasReference and sequence.getName() == reference['name']:
@@ -173,12 +170,35 @@ def _format_j_genes(jalignments, species, chain):
 
       species, chain, chain_type, allele = sequence.getName().strip(">").split("|")
 
-      # We take the last 13 of the new alignment and pad into 20 long string 
-      padded = sequence.getSequence()[START: END][-14:].rjust(20).replace(" ", ".")
+      gap_end = len(sequence.getSequence())-len(sequence.getSequence().rstrip('-'))
+      padded = sequence.getSequence().replace('-', '') + ('-'*gap_end)
+      padded = padded[-14:].rjust(20).replace(' ', '.')
+     
       results.append({
         'name': allele,
         'sequence': padded
       })
+      
+    # sys.exit(1)
+
+    # start = max(0, ref_aligned.find(reference['sequence']))
+    # START = (start+1-reference['start']) if start > reference['start'] else 0
+    # END = start + len(reference['sequence'])
+    # for sequence in fasta.parse(output_file):
+
+    #   print(sequence.getSequence())
+    #   if not hasReference and sequence.getName() == reference['name']:
+    #     continue
+
+    #   species, chain, chain_type, allele = sequence.getName().strip(">").split("|")
+
+    #   # We take the last 13 of the new alignment and pad into 20 long string 
+    #   padded = sequence.getSequence()[START: END][-14:].rjust(20).replace(" ", ".")
+    #   # print(padded)
+    #   results.append({
+    #     'name': allele,
+    #     'sequence': padded
+    #   })
 
   finally:
 

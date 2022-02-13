@@ -1,5 +1,6 @@
 species	path
 Homo sapiens	homo_sapiens.sto
+Mus musculus	mus_musculus.sto
 Rattus norvegicus	rattus_norvegicus.sto
 Oryctolagus cuniculus	oryctolagus_cuniculus.sto
 Macaca mulatta	macaca_mulatta.sto

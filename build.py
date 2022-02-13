@@ -15,37 +15,15 @@ import src.fasta as fasta
 
 base_path  = os.path.split(__file__)[0]
 
-# def output_stockholm(all_sequences, path):
-
-#   # Output a minimal stockholm alignment file for all sequences. 
-#   with open( path, "w") as outfile:
-#     for species, chain_type in all_sequences:
-#       sequences = all_sequences[(species, chain_type)]
-#       l = len(list(sequences.values())[0])
-#       assert all( [1 if l == len(sequences[s]) else 0 for s in sequences]), "Not all sequences in alignment are the same length"
-      
-#       ID = '{species}_{chain}'.format(species=species, chain=chain_type)
-#       outfile.write("# STOCKHOLM 1.0\n")
-#       outfile.write("#=GF ID %s\n" % ID)
-  
-#       pad_length = max(list(map(len, list(sequences.keys()))))+1
-#       for s in sequences:
-#         outfile.write("{name} {sequence}\n".format(name=s.replace(" ", "_").ljust(pad_length), sequence=sequences[s].replace(".","-")))
-
-#       outfile.write("{end} {match}\n".format(end="#=GC RF".ljust(pad_length), match="x"*len(sequences[s])))
-#       outfile.write("//\n")
-
-#   return path
-
 def generateAlignment(data, species, path):
 
   # Delete file if exists
   if os.path.exists(path):
     os.remove(path)
 
-  # Initialize file
-  with open(path, 'w') as handle:
-    handle.write("# STOCKHOLM 1.0\n")
+  # # Initialize file
+  # with open(path, 'w') as handle:
+  #   handle.write("# STOCKHOLM 1.0\n")
 
   for chain in data:
     if 'V' not in data[chain] or 'J' not in data[chain]:
@@ -75,8 +53,9 @@ def generateAlignment(data, species, path):
         })
 
     with open(path, 'a') as handle:
+      handle.write("# STOCKHOLM 1.0\n")
       handle.write("#=GF ID {species}_{chain}\n".format(
-        species=species,
+        species=species.replace(' ', '+'),
         chain=chain
       ))
       for i in range(len(result)):
@@ -89,15 +68,6 @@ def generateAlignment(data, species, path):
       handle.write("//\n")
 
 def validateAlignment(path, verbose=False):
-
-  # ruleList = {
-  #   23: ['C'],
-  #   41: ['W'],
-  #   89: ['A', 'I', 'L', 'M', 'F', 'W', 'Y', 'V', 'P'],
-  #   104: ['C'],
-  #   118: ['F', 'W']
-  # }
-  # 
 
   ruleList = {
     23: {
@@ -323,10 +293,14 @@ if __name__ == "__main__":
   argparser = argparse.ArgumentParser()
   argparser.add_argument('--force', '-f', action="store_true", dest="force", help="force rebuild")
   
-
   # Parse arguments
   args = argparser.parse_args();
 
+  # Check dist folder
+  dist_path = os.path.join(base_path, 'dist')
+  if not os.path.exists(dist_path):
+    os.mkdir(dist_path)
+    
   # Check cache folder
   cache_path = os.path.join(base_path, 'cache')
   if not os.path.exists(cache_path):
@@ -342,7 +316,7 @@ if __name__ == "__main__":
 
     print('Processing species {0}'.format(species))
     output_filename = '{0}.sto'.format(species).replace(' ', '_').lower()
-    output_stockholm = os.path.join(base_path, 'dist', output_filename)
+    output_stockholm = os.path.join(dist_path, output_filename)
     if not os.path.exists(output_stockholm) or args.force:
       
       data = {}
@@ -385,7 +359,7 @@ if __name__ == "__main__":
     })
 
   # Store results 
-  list_path = os.path.join(base_path, 'dist', 'list.txt')
+  list_path = os.path.join(dist_path, 'list.txt')
   with open(list_path, 'w') as handle:
 
     handle.write('species\tpath\n')
