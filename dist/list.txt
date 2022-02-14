@@ -6,4 +6,5 @@ Oryctolagus cuniculus	oryctolagus_cuniculus.sto	H,K,L
 Macaca mulatta	macaca_mulatta.sto	H,K,L
 Sus scrofa	sus_scrofa.sto	H,K,L
 Vicugna pacos	vicugna_pacos.sto	H
+Bos taurus	bos_taurus.sto	H,K,L,A,B
 Ovis aries	ovis_aries.sto	K,L,A,B,D

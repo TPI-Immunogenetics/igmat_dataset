@@ -103,6 +103,7 @@ def validateAlignment(path, verbose=False):
     with open(path, 'r') as handle:
 
       count = 0
+      chain_type = None
       for line in handle:
 
         count += 1
@@ -110,8 +111,8 @@ def validateAlignment(path, verbose=False):
 
         # Parse ID line
         if line.startswith('#=GF ID'):
-          chain = line.replace('#=GF ID', '').split('_')[1]
-          chainList.append(chain)
+          chain_type = line.replace('#=GF ID', '').split('_')[1]
+          chainList.append(chain_type)
           continue
 
         # Skip comment lines
@@ -136,7 +137,8 @@ def validateAlignment(path, verbose=False):
                     
             if sequence[index-1] not in ruleList[index]['residues']:
 
-              message = 'Line {0}: position {1} must be one of \'{2}\''.format(
+              message = 'Chain {0},line {1}: position {2} must be one of \'{3}\''.format(
+                chain_type,
                 count,
                 index,
                 ','.join(ruleList[index]['residues'])
@@ -155,8 +157,12 @@ def validateAlignment(path, verbose=False):
             warningCount += 1
             if verbose:
               print('Warning {0}: {1}'.format(filename, w))
-              print('  ' + sequence)
-              print('  ' + (' ' * (index-1) + '*'))
+              index_min = max(0, index-1-10)
+              index_max = min(index-1+10, len(sequence))
+              print('  ' + '.. ' + sequence[index_min:index_max] + ' ..')
+              print('  ' + '   ' + (' ' * (index-1-index_min) + '*'))
+              # print('  ' + sequence)
+              # print('  ' + (' ' * (index-1) + '*'))
             
 
   except Exception as e:
@@ -301,6 +307,7 @@ if __name__ == "__main__":
   # Initialize the argument parser
   argparser = argparse.ArgumentParser()
   argparser.add_argument('--force', '-f', action="store_true", dest="force", help="force rebuild")
+  argparser.add_argument('--verbose', '-v', action="store_true", dest="verbose", help="Increase verbosity")
   
   # Parse arguments
   args = argparser.parse_args();
@@ -358,7 +365,7 @@ if __name__ == "__main__":
       generateAlignment(data, species, output_stockholm)
   
     # Check the alignment
-    chainList = validateAlignment(output_stockholm)
+    chainList = validateAlignment(output_stockholm, verbose=args.verbose)
     
     # Update result list
     resultList.append({
