@@ -144,13 +144,6 @@ def validateAlignment(path, verbose=False):
                 ','.join(ruleList[index]['residues'])
                 )
               raise (Exception(message) if ruleList[index]['critic'] else Warning(message))
-              # raise exception
-              # if ruleList[index]['critic']:
-              #   raise Exception('')
-              # raise Warning('Position {0} must be one of: {1}'.format(
-              #   index,
-              #   ','.join(ruleList[index])
-              #   ))
 
           except Warning as w:
 
