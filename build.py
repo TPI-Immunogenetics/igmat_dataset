@@ -227,6 +227,10 @@ def fetchAlignment(url, output_path, force=False, retry=3):
     # All good, store fasta file
     with open(output_path, "w") as handle:
       for name, sequence in sequences:
+        # Skip invalid sequences
+        if not name:
+          continue
+          
         # Cleanup name
         name = name[1:] if name[0] == '>' else name
 
