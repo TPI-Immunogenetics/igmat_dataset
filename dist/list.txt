@@ -2,9 +2,9 @@ species	path	chain
 Homo sapiens	homo_sapiens.sto	A,B,D,G,H,K,L
 Mus musculus	mus_musculus.sto	A,B,D,G,H,K,L
 Rattus norvegicus	rattus_norvegicus.sto	K,L
-Oryctolagus cuniculus	oryctolagus_cuniculus.sto	cuniculus,cuniculus,cuniculus,cuniculus,cuniculus,cuniculus,cuniculus
+Oryctolagus cuniculus	oryctolagus_cuniculus.sto	H,K,L,A,B,G,D
 Macaca mulatta	macaca_mulatta.sto	H,K,L,A,B,G,D
 Sus scrofa	sus_scrofa.sto	H,K,L
 Vicugna pacos	vicugna_pacos.sto	H
-Bos taurus	bos_taurus.sto	H,K,L,A,B
+#Bos taurus	bos_taurus.sto	H,K,L,A,B
 Ovis aries	ovis_aries.sto	K,L,A,B,D
